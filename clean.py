@@ -15,6 +15,8 @@ employment = pd.read_csv('data/ACSST5Y2018.S2302_data_with_overlays_2020-09-08T1
 marital = pd.read_csv('data/ACSST5Y2018.S1201_data_with_overlays_2020-09-14T121102.csv', low_memory=False, header=1)
 language = pd.read_csv('data/ACSST5Y2018.S1601_data_with_overlays_2020-09-14T123248.csv', low_memory=False, header=1)
 density = pd.read_csv('data/uszips.csv')
+dem_char = pd.read_csv('data/ACSST5Y2018.S2502_data_with_overlays_2020-09-08T190727.csv', low_memory=False, header=1)
+housing_char = pd.read_csv('data/Physical_Housing_Characteristics.csv', low_memory=False, header=1)
 
 # Clean data dataframe
 data = data[data.columns.drop(list(data.filter(regex='^Margin')))] # Delete margin of error cols
@@ -87,6 +89,56 @@ real_estate_2019.rename(columns={'Five-Digit ZIP Code': 'zip'}, inplace=True) # 
 real_estate_2019 = real_estate_2019[['zip', 'Annual Change (%)', 'HPI']] # Select only columns needed
 real_estate_2019.set_index('zip', inplace=True) # Set zip as index
 real_estate_2019.rename(columns={'Annual Change (%)': 'HPI_%_Annual_Change'}, inplace=True) # Rename annual change % column
+
+# Clean housing characteristics dataframe
+housing_char['zip'] = housing_char['Geographic Area Name'].str[-5:]
+housing_char = housing_char[housing_char.columns.drop(list(housing_char.filter(regex='^Margin')))]
+housing_char.drop('id', axis=1, inplace=True)
+housing_char.drop('Geographic Area Name', axis=1, inplace=True)
+housing_char.set_index('zip', inplace=True)
+housing_char_percents = housing_char.filter(regex='Percent')
+housing_char_percents = housing_char_percents.replace({'-': np.nan})
+for i in housing_char_percents.columns:
+    try:
+        housing_char_percents[i] = housing_char_percents[i].astype(float)
+    except:
+        continue
+housing_char_percents.rename(columns={'Estimate!!Percent occupied housing units!!Occupied housing units!!UNITS IN STRUCTURE!!1, detached': 'Percent_SF_Houses_Det'}, inplace=True)
+housing_char_percents.rename(columns={'Estimate!!Percent occupied housing units!!Occupied housing units!!UNITS IN STRUCTURE!!1, attached': 'Percent_SF_Houses_Att'}, inplace=True)
+housing_char_percents.rename(columns={'Estimate!!Percent occupied housing units!!Occupied housing units!!UNITS IN STRUCTURE!!2 apartments': 'Percent_2F_Apts'}, inplace=True)
+housing_char_percents.rename(columns={'Estimate!!Percent occupied housing units!!Occupied housing units!!UNITS IN STRUCTURE!!3 or 4 apartments': 'Percent_3_4F_Apts'}, inplace=True)
+housing_char_percents.rename(columns={'Estimate!!Percent occupied housing units!!Occupied housing units!!UNITS IN STRUCTURE!!5 to 9 apartments':'Percent_5_9F_Apts'}, inplace=True)
+housing_char_percents.rename(columns={'Estimate!!Percent occupied housing units!!Occupied housing units!!UNITS IN STRUCTURE!!10 or more apartments':'Percent_10_PlusF_Apts'}, inplace=True)
+housing_char_percents.rename(columns={'Estimate!!Percent occupied housing units!!Occupied housing units!!UNITS IN STRUCTURE!!Mobile home or other type of housing':'Percent_Mobile_Home'}, inplace=True)
+housing_char_percents.rename(columns={'Estimate!!Percent occupied housing units!!Occupied housing units!!YEAR STRUCTURE BUILT!!2014 or later':'Percent_Yr_Built_2014_Plus'}, inplace=True)
+housing_char_percents.rename(columns={'Estimate!!Percent occupied housing units!!Occupied housing units!!YEAR STRUCTURE BUILT!!2010 to 2013':'Percent_Yr_Built_2010_2013'}, inplace=True)
+housing_char_percents.rename(columns={'Estimate!!Percent occupied housing units!!Occupied housing units!!YEAR STRUCTURE BUILT!!2000 to 2009':'Percent_Yr_Built_2000_2009'}, inplace=True)
+housing_char_percents.rename(columns={'Estimate!!Percent occupied housing units!!Occupied housing units!!YEAR STRUCTURE BUILT!!1980 to 1999':'Percent_Yr_Built_1980_1999'}, inplace=True)
+housing_char_percents.rename(columns={'Estimate!!Percent occupied housing units!!Occupied housing units!!YEAR STRUCTURE BUILT!!1960 to 1979':'Percent_Yr_Built_1960_1979'}, inplace=True)
+housing_char_percents.rename(columns={'Estimate!!Percent occupied housing units!!Occupied housing units!!YEAR STRUCTURE BUILT!!1940 to 1959':'Percent_Yr_Built_1940_1959'}, inplace=True)
+housing_char_percents.rename(columns={'Estimate!!Percent occupied housing units!!Occupied housing units!!YEAR STRUCTURE BUILT!!1939 or earlier':'Percent_Yr_Built_1939_Prior'}, inplace=True)
+housing_char_percents = housing_char_percents[['Percent_SF_Houses_Det', 'Percent_SF_Houses_Att', 'Percent_2F_Apts', 'Percent_3_4F_Apts', 'Percent_5_9F_Apts', 'Percent_10_PlusF_Apts', 'Percent_Mobile_Home', 'Percent_Yr_Built_2014_Plus', 'Percent_Yr_Built_2010_2013', 'Percent_Yr_Built_2000_2009', 'Percent_Yr_Built_1980_1999', 'Percent_Yr_Built_1960_1979', 'Percent_Yr_Built_1940_1959', 'Percent_Yr_Built_1939_Prior']]
+
+# Clean demographic characteristics dataframe
+dem_char['zip'] = dem_char['Geographic Area Name'].str[-5:]
+dem_char = dem_char[dem_char.columns.drop(list(dem_char.filter(regex='^Margin')))]
+dem_char.drop('id', axis=1, inplace=True)
+dem_char.drop('Geographic Area Name', axis=1, inplace=True)
+dem_char.set_index('zip', inplace=True)
+dem_char_percents = dem_char.filter(regex='Percent')
+dem_char_percents = dem_char_percents.replace({'-': np.nan})
+for i in dem_char_percents.columns:
+    try:
+        dem_char_percents[i] = dem_char_percents[i].astype(float)
+    except:
+        continue
+dem_char_percents.rename(columns={'Estimate!!Percent occupied housing units!!Occupied housing units!!YEAR HOUSEHOLDER MOVED INTO UNIT!!Moved in 2017 or later':'Percent_Moved_In_2017_Plus'}, inplace=True)
+dem_char_percents.rename(columns={'Estimate!!Percent occupied housing units!!Occupied housing units!!YEAR HOUSEHOLDER MOVED INTO UNIT!!Moved in 2015 to 2016':'Percent_Moved_In_2015_2016'}, inplace=True)
+dem_char_percents.rename(columns={'Estimate!!Percent occupied housing units!!Occupied housing units!!YEAR HOUSEHOLDER MOVED INTO UNIT!!Moved in 2010 to 2014':'Percent_Moved_In_2010_2014'}, inplace=True)
+dem_char_percents.rename(columns={'Estimate!!Percent occupied housing units!!Occupied housing units!!YEAR HOUSEHOLDER MOVED INTO UNIT!!Moved in 2000 to 2009':'Percent_Moved_In_2000_2009'}, inplace=True)
+dem_char_percents.rename(columns={'Estimate!!Percent occupied housing units!!Occupied housing units!!YEAR HOUSEHOLDER MOVED INTO UNIT!!Moved in 1990 to 1999':'Percent_Moved_In_1990_1999'}, inplace=True)
+dem_char_percents.rename(columns={'Estimate!!Percent occupied housing units!!Occupied housing units!!YEAR HOUSEHOLDER MOVED INTO UNIT!!Moved in 1989 or earlier':'Percent_Moved_In_1989_Prior'}, inplace=True)
+dem_char_percents = dem_char_percents[['Percent_Moved_In_2017_Plus', 'Percent_Moved_In_2015_2016', 'Percent_Moved_In_2010_2014', 'Percent_Moved_In_2000_2009', 'Percent_Moved_In_1990_1999', 'Percent_Moved_In_1989_Prior']]
 
 # Clean veteran dataframe
 veteran['zip'] = veteran['Geographic Area Name'].str[-5:] # Add zip code column
@@ -257,7 +309,7 @@ for i in language_percents.columns:
         continue
 
 # Create final dataframe
-final = pd.concat([data_percents, education_percents, employment_percents, language_percents, veteran_percents, transportation_percents, financial_percents, marital_percents, real_estate_2019, density], axis=1)
+final = pd.concat([data_percents, education_percents, employment_percents, language_percents, veteran_percents, transportation_percents, financial_percents, marital_percents, real_estate_2019, density, housing_char_percents, dem_char_percents], axis=1)
 
 # Fix the remaining object datatypes in the final. Cut down zip codes less than 2000
 final['Mean_Commute_Time'] = final['Mean_Commute_Time'].astype(float)
