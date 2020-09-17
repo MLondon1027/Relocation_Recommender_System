@@ -14,6 +14,7 @@ education = pd.read_csv('data/Education.csv', low_memory=False, header=1)
 employment = pd.read_csv('data/ACSST5Y2018.S2302_data_with_overlays_2020-09-08T190000.csv', low_memory=False, header=1)
 marital = pd.read_csv('data/ACSST5Y2018.S1201_data_with_overlays_2020-09-14T121102.csv', low_memory=False, header=1)
 language = pd.read_csv('data/ACSST5Y2018.S1601_data_with_overlays_2020-09-14T123248.csv', low_memory=False, header=1)
+density = pd.read_csv('data/uszips.csv')
 
 # Clean data dataframe
 data = data[data.columns.drop(list(data.filter(regex='^Margin')))] # Delete margin of error cols
@@ -70,6 +71,12 @@ data_percents = data_percents[['total_pop', 'Percent_Under_5', 'Percent_5_to_9',
                                'Percent_40_to_44', 'Percent_45_to_49', 'Percent_50_to_54', 
                                'Percent_55_to_59', 'Percent_60_to_64', 'Percent_65_to_69', 
                                'Percent_70_to_74', 'Percent_75_to_79', 'Percent_80_to_84', 'Percent_85_Plus']]
+
+# Clean density dataframe
+density = density[['zip', 'density']]
+density['zip'] = density['zip'].astype(str) # Set zip as string
+density['zip']=density['zip'].str.rjust(5, "0") # Fill zip codes that begin with 0
+density.set_index('zip', inplace=True) # Set zip as index
 
 # Clean real estate dataframe
 real_estate = real_estate.iloc[5:] # Drop first 5 rows of headers
@@ -250,7 +257,7 @@ for i in language_percents.columns:
         continue
 
 # Create final dataframe
-final = pd.concat([data_percents, education_percents, employment_percents, language_percents, veteran_percents, transportation_percents, financial_percents, marital_percents, real_estate_2019], axis=1)
+final = pd.concat([data_percents, education_percents, employment_percents, language_percents, veteran_percents, transportation_percents, financial_percents, marital_percents, real_estate_2019, density], axis=1)
 
 # Fix the remaining object datatypes in the final. Cut down zip codes less than 2000
 final['Mean_Commute_Time'] = final['Mean_Commute_Time'].astype(float)
@@ -276,4 +283,4 @@ final = final[final['total_pop'] >= 2000] # Drop zip codes with fewer than 2000 
 final.dropna(axis=0, how='any', inplace=True) # Drop NaNs
 
 # Save to csv
-final.to_csv('data/final_data.csv', index=False)
+final.to_csv('data/final.csv', index=False)
