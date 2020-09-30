@@ -1,7 +1,10 @@
-# Relocation_Recommender_System
+# Relocation Recommender System
 Recommending zip codes in a relocation city based on similarity to previous home zip code
 
 When relocating to a new city, it is often difficult to determine where to live that will have a similar feel to home. Relocation families, know as "relos" in the real estate brokerage industry, often struggle to narrow down towns and wind up looking at homes in many very different communities. Families are often uprooted and are looking for a sense of stability and community. They often have limited time to make a decision and view homes, and end up making a hasty decision. The goal of this project is to build a recommender system that recommends a particular zip code near or in the city that the individual or family is looking to move to that will feel most like home. This tool will be helpful not only for moving families but for real estate agents looking to narrow down locations to show properties.
+
+
+## Feature Selection
 
 Data will come from the following sources:
 
@@ -31,7 +34,7 @@ Housing Type (Single Family Attached, Single Family Detached, 2-10+ unit apartme
 Year Homes Built
 Length of tenure in current homes
 
-Testing Scenarios - All Features
+## Testing Scenarios - All Features
 
 Scenario #1: Dallas, TX, 75205 to Massachusetts
 
@@ -67,6 +70,9 @@ I found that removing median household income, density, total population, or lan
 
 The reason that removing one feature/feature category at a time had little impact on the recommendations is that several of these features are highly correlated with each other. For example, median household income is highly correlated with education, so if median household income is removed, it is still captured within education.
 
+## Next steps
+
+In the future, I would like to add school data, external location factors (such as the number of restaurants and coffee shops), and ultimately build a Flask app for public consumption.
 
 
 
