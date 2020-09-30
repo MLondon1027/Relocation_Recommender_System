@@ -6,7 +6,9 @@ When relocating to a new city, it is often difficult to determine where to live 
 Data will come from the following sources:
 
 The 5-Year American Community Survey, which includes information about people and housing characteristics (census.gov)
+similarmaps.com (to map zip codes to cities).
 
+Features were selected based on domain knowledge.
 
 Features
 Total Population
@@ -53,8 +55,18 @@ Scenario #4: 01230, Jamaica Plain, MA to Seattle WA
 
 98144 is part of the Beacon Hill neighborhood in Seattle. It is primarily residential and close to downtown, similar to Jamaica Plain. 98199 is part of the Magnolia neighborhood in Seattle, which is upscale and full of families. 98103 is the Green Lake neighborhood, which I am more familiar with. It is definitely full of active, young families and singles.
 
+I evaluated the results based on zip codes I am personally familiar with to determine if they had a similar fit.
 
-Scenario #5: 85250, Scottsdale, AZ to Florida
-The recommender chose Boca Raton, West Palm Beach, and Sarasota, amongst other popular active retiree/family/single combo locations.
+## Removing features
+
+I removed one feature (or feature category) at a time to determine how the top 10 recommendations changed (if at all) for a particular zip code. I did this for several different types of zip codes (suburban, urban, in different states, etc) to be sure the recommender was working similarly across the board.
+
+Please view this link for all outcomes: https://docs.google.com/spreadsheets/d/1RWeUA_npw3WvNmLDn2eideJk0rRiAzY1sG_v18jJFDE/edit#gid=0
+
+I found that removing median household income, density, total population, or language had little to no effect on the top 10 recommendations. Employment characteristics had the largest effect of all features I looked at but it was still minimal.
+
+The reason that removing one feature/feature category at a time had little impact on the recommendations is that several of these features are highly correlated with each other. For example, median household income is highly correlated with education, so if median household income is removed, it is still captured within education.
+
+
 
 
