@@ -58,7 +58,6 @@ def cosine_recommend_zip(zip_input, num, city, state):
             merged = merged.reset_index(drop=True)
             recs = merged[0:int(num)+1]
             print(recs)
-    return recs
 
 if __name__ == "__main__":
     zip_input=input("Enter your zip code: ")
