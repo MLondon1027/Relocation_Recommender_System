@@ -56,7 +56,7 @@ def cosine_recommend_zip(zip_input, num, city, state):
             merged = merged[merged['State']==state]
             merged = merged[merged['City']==city]
             merged = merged.reset_index(drop=True)
-            recs = merged[0:int(num)+1]
+            recs = merged[0:int(num)]
             print(recs)
 
 if __name__ == "__main__":
