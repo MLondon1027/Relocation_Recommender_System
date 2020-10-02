@@ -63,5 +63,5 @@ if __name__ == "__main__":
     zip_input=input("Enter your zip code: ")
     num=input("Optional: Enter number of recommendations: ")
     city=input("Optional: Enter city: ")
-    state=input("Optional: Enter state: ")
+    state=input("Optional: Enter state abbreviation: ")
     cosine_recommend_zip(zip_input, num, city, state)
