@@ -12,14 +12,12 @@ def cosine_recommend_zip(zip_input, num, city, state):
     for idx, i in enumerate(final['index']):
         if len(i) == 4:
             final.iloc[idx, 2] = '0' + i
-    #final['index'] = final['index'].astype(int)
     final.drop('Unnamed: 0', axis=1, inplace=True)
     final.drop('level_0', axis=1, inplace=True)
     final.set_index('index', inplace=True)
     scaler = StandardScaler()
     scaled = scaler.fit_transform(final)
     scaled = pd.DataFrame(scaled, index=final.index, columns=final.columns)
-    #print(scaled.head())
     cosine_matrix = cosine_similarity(scaled, scaled)
     mapping = pd.Series(scaled.reset_index().index, index = scaled.index)
     zip_location = pd.read_csv('us-zip-code-latitude-and-longitude.csv', sep = ';')
@@ -32,7 +30,6 @@ def cosine_recommend_zip(zip_input, num, city, state):
     # Get the scores of the n most similar zip codes. Ignore the first zip code, as it is itself.
     #return zip codes using the mapping series
     zip_indices = [i[0] for i in similarity_score]
-    #similarity_score = similarity_score[1:num+1]
     best = []
     for i in zip_indices:
         best.append(int(final.reset_index().iloc[i][0]))
