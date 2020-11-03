@@ -3,8 +3,16 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.metrics.pairwise import cosine_similarity
 import pandas as pd
 import numpy as np
+import sys
+#from flask import Flask # Nov 3
+#app = Flask (__name__) # Nov 3
 
+#@app.route('/') # Nov 3
 def cosine_recommend_zip(zip_input, num, city, state):
+    if len(state) > 0:
+        state = state.upper()
+    if len(city) > 0:
+        city = city.capitalize()
     if len(num) == 0:
         num = '10'
     final = pd.read_csv('final_data.csv')
@@ -21,7 +29,11 @@ def cosine_recommend_zip(zip_input, num, city, state):
     cosine_matrix = cosine_similarity(scaled, scaled)
     mapping = pd.Series(scaled.reset_index().index, index = scaled.index)
     zip_location = pd.read_csv('us-zip-code-latitude-and-longitude.csv', sep = ';')
-    zip_index = int(mapping[zip_input])
+    try:
+        zip_index = int(mapping[zip_input])
+    except:
+        print('Please enter a valid zip code.')
+        sys.exit(1)
     #get similarity values with other zip codes
     #similarity_score is the list of index and similarity matrix
     similarity_score = list(enumerate(cosine_matrix[zip_index]))
@@ -42,10 +54,15 @@ def cosine_recommend_zip(zip_input, num, city, state):
             recs = merged[1:int(num)+1]
             print(recs)
         else:
-            merged = merged[merged['State']==state]
-            merged = merged.reset_index(drop=True)
-            recs = merged[1:int(num)+1]
-            print(recs)
+            if len(merged['State'].where(merged['State'] == state)) > 0:
+            #if state in merged['State']:
+                merged = merged[merged['State']==state]
+                merged = merged.reset_index(drop=True)
+                recs = merged[1:int(num)+1]
+                print(recs)
+            else:
+                print('Please enter a valid state abbreviation.')
+                sys.exit(1)
     else:
         if len(state) == 0:
             print('You must enter a state with a city.')
@@ -54,7 +71,13 @@ def cosine_recommend_zip(zip_input, num, city, state):
             merged = merged[merged['City']==city]
             merged = merged.reset_index(drop=True)
             recs = merged[0:int(num)]
-            print(recs)
+            if len(recs) != 0:
+                print(recs)
+            else:
+                print('Please enter a valid city.')
+                sys.exit(1)
+    
+    
 
 if __name__ == "__main__":
     zip_input=input("Enter your zip code: ")
@@ -62,3 +85,4 @@ if __name__ == "__main__":
     city=input("Optional: Enter city: ")
     state=input("Optional: Enter state abbreviation: ")
     cosine_recommend_zip(zip_input, num, city, state)
+    #app.run() # Nov 3
