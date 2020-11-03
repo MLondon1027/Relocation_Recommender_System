@@ -74,5 +74,8 @@ The reason that removing one feature/feature category at a time had little impac
 
 In the future, I would like to add school data, external location factors (such as the number of restaurants and coffee shops), and ultimately build a Flask app for public consumption.
 
+## How to Use the Recommender
+After cloning the repository, run the recommender.py file. Enter your current (or favorite) 5 digit zip code, enter the number of results you would like (or leave empty for a default of 10), and optionally enter a city (aiming to select a city that has at least as many zip codes as your desired number of results), and a state abbreviation. The state abbreviation is required if a city is entered and optional otherwise.
+
 
 
